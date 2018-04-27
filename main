@@ -28,6 +28,6 @@ if __name__ == '__main__':
         logger.initialize_logger()
         consulidator()
     except Exception as e:
-        logger = logging.getLogger("consulere")
+        logger = logging.getLogger("consulidator")
         logging.critical("Unhandled exception: {}".format(e), exc_info=True)
         raise
