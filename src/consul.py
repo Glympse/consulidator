@@ -38,7 +38,8 @@ class Consul:
             r = requests.put(request_url, headers=headers, json=transaction_data)
             r.raise_for_status()            
         except requests.HTTPError:  
-            logging.critical('Unable upload kv to %s', request_url, exc_info=True)
+            kv = transaction_data[0]['KV']['Key']
+            logging.critical('Unable upload kv %s to %s', kv, request_url, exc_info=False)
         except requests.ConnectionError:
             logging.critical('Unable to connect to Consul at address %s', request_url, exc_info=True)
 
