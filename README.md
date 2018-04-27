@@ -1,28 +1,39 @@
 # Consulidator
-Simple, dockerized way to backup and restore your Consul datastore
+Simple, dockerized way to backup and restore your Consul datastore.
+
+## Usage
+```
+Usage: main [OPTIONS] ADDRESS
+
+Options:
+  --backup        Performs a backup - Default mode
+  --restore TEXT  Performs a restore
+  --port INTEGER  Consul Port
+  --secure        Enables TLS connection
+  --token TEXT    ACL token
+  --help          Show this message and exit.
+```
 
 ## Backup:
+To backup to `my_backup` in the current directory:
 ```sh
 CONSUL_ADDRESS=10.0.1.2
-CONSUL_PORT=8500
 BACKUP_FILE=my_backup
 
 docker run --rm \
-djenriquez/consulidator:v0.1.0 \
---backup \
---port $CONSUL_PORT $CONSUL_ADDRESS > $BACKUP_FILE
+glympse/consulidator:v0.1.0 \
+$CONSUL_ADDRESS > $BACKUP_FILE
 ```
 
 ## Restore:
-Assuming that you are running the restore in the working directory that contains `$BACKUP_FILE`
+To restore from `my_backup` in the current directory:
 ```sh
 CONSUL_ADDRESS=10.0.1.2
-CONSUL_PORT=8500
 BACKUP_FILE=my_backup
 
 docker run --rm \
 -v `pwd`:/restore \
-djenriquez/consulidator:v0.1.0 \
+glympse/consulidator:v0.1.0 \
 --restore $BACKUP_FILE \
---port $CONSUL_PORT $CONSUL_ADDRESS
+$CONSUL_ADDRESS
 ```
