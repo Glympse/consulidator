@@ -7,8 +7,7 @@ logger = logging.getLogger('consul')
 
 class Consul:
     def __init__(self, address, port, secure, token):
-        self._address = "https://{}".format(address) if secure is True else "http://{}".format(address)
-        self._port = port
+        self._address = f"https://{address}:{port}"if secure is True else f"http://{address}:{port}"
         self._token = token
 
     def backup_kv(self):
