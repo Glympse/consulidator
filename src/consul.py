@@ -7,8 +7,7 @@ logger = logging.getLogger('consul')
 
 class Consul:
     def __init__(self, address, port, secure, token):
-        self._address = "https://{}".format(address) if secure is True else "http://{}".format(address)
-        self._port = port
+        self._address = f'https://{address}:{port}'if secure is True else f'http://{address}:{port}'
         self._token = token
 
     def backup_kv(self):
@@ -25,7 +24,10 @@ class Consul:
 
         for line in restore_file:
             kv = line.split(':')
-            transaction_data.append({ 'KV' : { 'Verb': 'set', 'Key': kv[0], 'Value': kv[1] } })
+            if kv[1] == 'None\n':
+                logging.warn(f'Not restoring key {kv[0]}, value is "None"')
+            else:
+                transaction_data.append({ 'KV' : { 'Verb': 'set', 'Key': kv[0], 'Value': kv[1] } })
 
         for x in range(0, len(transaction_data), 10):
             self._upload_kv(transaction_data[x:x+10])
@@ -38,11 +40,11 @@ class Consul:
             r = requests.put(request_url, headers=headers, json=transaction_data)
             r.raise_for_status()            
         except requests.HTTPError:  
-            logging.critical('Unable upload kv to %s', request_url, exc_info=True)
+            kv = transaction_data[0]['KV']['Key']
+            logging.critical('Unable upload key %s to %s', kv, request_url, exc_info=False)
         except requests.ConnectionError:
             logging.critical('Unable to connect to Consul at address %s', request_url, exc_info=True)
 
-       
     def _fetch_kv(self):
         headers = { 'X-Consul-Token': self._token } if self._token is not None else {}
         request_url = '{address}/v1/kv/?recurse'.format(address=self._address)
