@@ -19,9 +19,10 @@ To backup to `my_backup` in the current directory:
 ```sh
 CONSUL_ADDRESS=10.0.1.2
 BACKUP_FILE=my_backup
+VERSION=latest
 
 docker run --rm \
-glympse/consulidator:v0.1.0 \
+djenriquez/consulidator:$VERSION \
 $CONSUL_ADDRESS > $BACKUP_FILE
 ```
 
@@ -30,10 +31,11 @@ To restore from `my_backup` in the current directory:
 ```sh
 CONSUL_ADDRESS=10.0.1.2
 BACKUP_FILE=my_backup
+VERSION=latest
 
 docker run --rm \
 -v `pwd`:/restore \
-glympse/consulidator:v0.1.0 \
+djenriquez/consulidator:$VERSION \
 --restore $BACKUP_FILE \
 $CONSUL_ADDRESS
 ```
